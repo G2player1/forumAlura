@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class SpringDocConfiguration {
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("bearer")
                                         .bearerFormat("JWT")))
+                .addSecurityItem(new SecurityRequirement().addList("bearer-key"))
                 .info(new Info()
                         .title("forumAlura.API")
                         .description("API Rest de um forum de duvidas")
@@ -29,6 +31,6 @@ public class SpringDocConfiguration {
                                 .email("enoshenrique008@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("http://voll.med/api/licenca")));
+                                .url("http://forumAlura/index.html")));
     }
 }

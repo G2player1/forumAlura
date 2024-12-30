@@ -1,6 +1,8 @@
 package Enos.SpringProject.forumAlura.domain.models.user;
 
 import Enos.SpringProject.forumAlura.domain.models.profile.Profile;
+import Enos.SpringProject.forumAlura.domain.models.response.Response;
+import Enos.SpringProject.forumAlura.domain.models.topic.Topic;
 import Enos.SpringProject.forumAlura.domain.models.user.dto.RegisterUserDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -40,6 +42,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Profile> profiles;
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Topic> topics;
+    @OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Response> responses;
     @Column(name = "active",nullable = false)
     private Integer active;
 
@@ -54,6 +62,21 @@ public class User implements UserDetails {
 
     public void deleteUser(){
         this.active = 0;
+    }
+
+    public void addProfile(Profile profile){
+        if(profile == null) throw new RuntimeException("Invalid profile");
+        profiles.add(profile);
+    }
+
+    public void addTopic(Topic topic){
+        if(topic == null) throw new RuntimeException("Invalid topic");
+        topics.add(topic);
+    }
+
+    public void addResponse(Response response){
+        if(response == null) throw new RuntimeException("Invalid response");
+        responses.add(response);
     }
 
     @Override
@@ -89,6 +112,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active == 1;
     }
 }
