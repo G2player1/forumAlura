@@ -35,21 +35,24 @@ public class Topic {
     private TopicStatus status;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonBackReference
-    @JoinTable(name = "course_id")
+    @JoinColumn(name = "course_id")
     private Course course;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonBackReference
-    @JoinTable(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(mappedBy = "topic",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Response> responseList;
+    @Column(name = "active",nullable = false)
+    private Integer active;
 
     public Topic(RegisterTopicDTO registerTopicDTO){
         this.title = registerTopicDTO.title();
         this.message = registerTopicDTO.message();
         this.creationDate = registerTopicDTO.date();
         this.status = TopicStatus.UNSOLVED;
+        this.active = 1;
     }
 
     public void setCourse(Course course){
@@ -66,5 +69,10 @@ public class Topic {
         if(response == null) throw new RuntimeException("invalid response");
         responseList.add(response);
         this.status = TopicStatus.SOLVED;
+    }
+
+    public void deleteTopic(){
+        this.active = 0;
+        responseList.forEach(Response::deleteResponse);
     }
 }

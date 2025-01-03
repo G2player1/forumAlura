@@ -25,22 +25,25 @@ public class Response {
     private String message;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonBackReference
-    @JoinTable(name = "topic_id")
+    @JoinColumn(name = "topic_id")
     private Topic topic;
     @Column(name = "creation_date",nullable = false)
     private LocalDate creationDate;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonBackReference
-    @JoinTable(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "solution",nullable = false,length = 5000)
     private String solution;
+    @Column(name = "active",nullable = false)
+    private Integer active;
 
 
     public Response(RegisterResponseDTO registerResponseDTO){
         this.message = registerResponseDTO.message();
         this.creationDate = registerResponseDTO.date();
         this.solution = registerResponseDTO.solution();
+        this.active = 1;
     }
 
     public void setUser(User user){
@@ -51,6 +54,10 @@ public class Response {
     public void setTopic(Topic topic){
         if (topic == null) throw new RuntimeException("Invalid topic");
         this.topic = topic;
+    }
+
+    public void deleteResponse(){
+        this.active = 0;
     }
 
 }

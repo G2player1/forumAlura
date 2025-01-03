@@ -20,8 +20,8 @@ public class Profile {
     @Column(name = "name",nullable = false)
     private String name;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
     @JsonBackReference
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Profile(User user, String name){

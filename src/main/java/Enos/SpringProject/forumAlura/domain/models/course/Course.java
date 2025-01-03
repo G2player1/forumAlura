@@ -28,14 +28,21 @@ public class Course {
     @OneToMany(mappedBy = "course",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Topic> topicList;
+    @Column(name = "active",nullable = false)
+    private Integer active;
 
     public Course(RegisterCourseDTO registerCourseDTO){
         this.name = registerCourseDTO.name();
         this.category = Category.fromString(registerCourseDTO.category());
+        this.active = 1;
     }
 
     public void addTopic(Topic topic){
         if (topic == null) throw new RuntimeException("Invalid topic");
         topicList.add(topic);
+    }
+
+    public void deleteCourse(){
+        this.active = 0;
     }
 }
