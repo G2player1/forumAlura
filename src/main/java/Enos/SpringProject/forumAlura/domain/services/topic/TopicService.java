@@ -6,13 +6,17 @@ import Enos.SpringProject.forumAlura.domain.models.topic.Topic;
 import Enos.SpringProject.forumAlura.domain.models.topic.dto.ReadDetailedTopicDTO;
 import Enos.SpringProject.forumAlura.domain.models.topic.dto.ReadTopicDTO;
 import Enos.SpringProject.forumAlura.domain.models.topic.dto.RegisterTopicDTO;
+import Enos.SpringProject.forumAlura.domain.models.topic.dto.UpdateTopicDTO;
 import Enos.SpringProject.forumAlura.domain.models.user.User;
 import Enos.SpringProject.forumAlura.domain.repositories.ICourseRepository;
 import Enos.SpringProject.forumAlura.domain.repositories.ITopicRepository;
 import Enos.SpringProject.forumAlura.domain.repositories.IUserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,9 +45,31 @@ public class TopicService {
         return new ReadTopicDTO(topic);
     }
 
+    @Transactional
     public ReadDetailedTopicDTO getTopicById(Long id) {
         Topic topic = topicRepository.findByIdAndActive(id, 1);
         if (topic == null) throw new EntityNotFoundException("topic not found");
         return new ReadDetailedTopicDTO(topic);
+    }
+
+    @Transactional
+    public Page<ReadTopicDTO> getTopics(Pageable pageable) {
+        Page<Topic> topicPage = topicRepository.findByActive(1, pageable);
+        return topicPage.map(ReadTopicDTO::new);
+    }
+
+    @Transactional
+    public ReadTopicDTO editTopic(@Valid UpdateTopicDTO updateTopicDTO) {
+        Topic topic = topicRepository.findByIdAndActive(updateTopicDTO.id(), 1);
+        if (topic == null) throw new EntityNotFoundException("topic not found");
+        topic.update(updateTopicDTO);
+        return new ReadTopicDTO(topic);
+    }
+
+    @Transactional
+    public void deleteTopic(Long id) {
+        Topic topic = topicRepository.findByIdAndActive(id, 1);
+        if (topic == null) throw new EntityNotFoundException("topic not found");
+        topic.deleteTopic();
     }
 }

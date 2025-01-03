@@ -3,10 +3,12 @@ package Enos.SpringProject.forumAlura.domain.models.topic;
 import Enos.SpringProject.forumAlura.domain.models.course.Course;
 import Enos.SpringProject.forumAlura.domain.models.response.Response;
 import Enos.SpringProject.forumAlura.domain.models.topic.dto.RegisterTopicDTO;
+import Enos.SpringProject.forumAlura.domain.models.topic.dto.UpdateTopicDTO;
 import Enos.SpringProject.forumAlura.domain.models.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -74,5 +76,10 @@ public class Topic {
     public void deleteTopic(){
         this.active = 0;
         responseList.forEach(Response::deleteResponse);
+    }
+
+    public void update(@Valid UpdateTopicDTO updateTopicDTO) {
+        if (updateTopicDTO.title() != null) this.title = updateTopicDTO.title();
+        if (updateTopicDTO.message() != null) this.message = updateTopicDTO.message();
     }
 }
